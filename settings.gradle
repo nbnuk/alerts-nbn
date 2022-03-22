@@ -1,0 +1,11 @@
+rootProject.name='alerts-nbn'
+
+// Inplace plugin config
+// Set to true it needed only for development
+boolean inplace = false
+
+if (inplace) {
+    include ':alerts'
+    project(':alerts').projectDir = new File(settingsDir,'../alerts')
+}
+
