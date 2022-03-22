@@ -2,7 +2,7 @@
 grails:
     profile: web
     codegen:
-        defaultPackage: au.org.au.alerts
+        defaultPackage: uk.org.nbn.alerts
     config:
         locations:
             - file:/data/alerts/config/alerts-config.properties
