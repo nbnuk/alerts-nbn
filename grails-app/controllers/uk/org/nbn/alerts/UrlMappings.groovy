@@ -4,6 +4,6 @@ class UrlMappings {
 
 
     static mappings = {
-
+        "/wsopen/alerts/user/$userId"(controller: 'webservice', action: [GET: 'getUserAlertsOutsideCAS'])
     }
 }
