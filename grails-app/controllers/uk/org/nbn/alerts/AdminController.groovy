@@ -11,7 +11,4 @@ class AdminController extends au.org.ala.alerts.AdminController{
         render status: 404
     }
 
-    def showUsersAlerts() {
-        super.showUsersAlerts();
-    }
 }
