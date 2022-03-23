@@ -65,7 +65,7 @@ dependencies {
     compile "org.grails.plugins:hibernate5"
 
     if(!inplace) {
-        compile "au.org.ala:alerts:1.0.0-NBN-FFTF-SNAPSHOT", noCache
+        compile "au.org.ala:alerts:1.0.0-NBN-FFTF-SNAPSHOT"
     }
 
     compile "org.hibernate:hibernate-core:5.1.16.Final"
