@@ -7,33 +7,25 @@ class BootStrap extends au.org.ala.alerts.BootStrap{
 
 
     def init = { servletContext ->
-        log.info("Running nbn bootstrap queries.")
+        log.info("NBN Running bootstrap queries.")
         preloadQueries()
-        log.info("Done nbn bootstrap queries.")
-        super.preloadQueries()
+        log.info("NBN Done bootstrap queries.")
     }
 
     private void preloadQueries() {
-        if(Query.findAllByName('Annotations').isEmpty()){
-            Query newAssertions = (new Query([
-                    baseUrl: grailsApplication.config.biocacheService.baseURL,
-                    baseUrlForUI: grailsApplication.config.biocache.baseURL,
-                    resourceName:  grailsApplication.config.postie.defaultResourceName,
-                    name: 'Annotations',
-                    updateMessage: 'annotations.update.message',
-                    description: 'Notify me when annotations are made on any record.',
-                    queryPath: '/occurrences/search?fq=user_assertions:*&q=user_assertions:true AND last_assertion_date:[___DATEPARAM___%20TO%20*]&sort=last_assertion_date&dir=desc&pageSize=20&facets=basis_of_record',
-                    queryPathForUI: '/occurrences/search?fq=user_assertions:*&q=last_assertion_date:[___DATEPARAM___%20TO%20*]&sort=last_assertion_date&dir=desc',
-                    dateFormat: """yyyy-MM-dd'T'HH:mm:ss'Z'""",
-                    emailTemplate: '/email/biocache',
-                    recordJsonPath: '\$.occurrences[*]',
-                    idJsonPath: 'uuid'
-            ])).save()
-            new PropertyPath([name: "totalRecords", jsonPath: "totalRecords", query: newAssertions, fireWhenNotZero: true]).save()
-            new PropertyPath([name: "last_assertion_record", jsonPath: "occurrences[0].rowKey", query: newAssertions]).save()
+        log.info("NBN start of preloadQueries")
+
+        def queries = Query.findAllByNameAndDescription('Annotations','Notify me when annotations are made on any record.')
+
+        queries.each {
+            if (!it.queryPath.indexOf("fq=user_assertions:*")) {
+                it.setQueryPath('/occurrences/search?fq=user_assertions:*&q=user_assertions:true AND last_assertion_date:[___DATEPARAM___%20TO%20*]&sort=last_assertion_date&dir=desc&pageSize=20&facets=basis_of_record')
+                it.setQueryPathForUI('/occurrences/search?fq=user_assertions:*&q=last_assertion_date:[___DATEPARAM___%20TO%20*]&sort=last_assertion_date&dir=desc')
+                it.save(flush: true)
+            }
         }
 
-        log.info("end of preloadQueries")
+        log.info("NBN end of preloadQueries")
     }
 
     def destroy = {}
