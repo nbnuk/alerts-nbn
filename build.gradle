@@ -90,6 +90,10 @@ bootRun {
 assets {
     minifyJs = true
     minifyCss = true
+    minifyOptions = [
+            excludes : [ '**/nbn.js' ]
+    ]
+
 }
 
 publishing {
