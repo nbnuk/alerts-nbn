@@ -114,9 +114,14 @@ root(WARN, [APPENDER])
         ],
         (INFO): [
                 'grails.plugin.externalconfig.ExternalConfig',
-//                'au.org.ala'
+                'uk.org.nbn.alerts',
+                'au.org.ala'
         ],
         (DEBUG): [ // DEBUG and TRACE should only be enabled for non-production environments
+                   'uk.org.nbn.alerts',
+                   'au.org.ala',
+                   'grails.app',
+                   'org.grails.plugins'
         ],
         (TRACE): [
         ]

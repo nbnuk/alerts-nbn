@@ -1,9 +1,8 @@
 package uk.org.nbn.alerts
 
 import au.org.ala.alerts.Query
-import au.org.ala.alerts.PropertyPath
 
-class BootStrap extends au.org.ala.alerts.BootStrap{
+class BootStrap {
 
 
     def init = { servletContext ->

@@ -24,6 +24,11 @@ apply plugin:"org.grails.grails-gsp"
 apply plugin:"asset-pipeline"
 apply plugin:"maven-publish"
 
+//apply from: 'https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_grails_publish.gradle'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 repositories {
     mavenLocal()
     maven { url "https://repository.gbif.org/repository/uk-nbn-releases/" }
@@ -45,11 +50,18 @@ if (inplace) {
 }
 
 dependencies {
+
+    def noCache = {
+     //   exclude group: 'org.grails.plugins', module: 'cache'
+       // exclude group: 'org.ehcache', module: 'ehcache'
+    }
+
     compile "org.springframework.boot:spring-boot-starter-logging"
     compile "org.springframework.boot:spring-boot-autoconfigure"
     compile "org.grails:grails-core"
     compile "org.springframework.boot:spring-boot-starter-actuator"
     provided "org.springframework.boot:spring-boot-starter-tomcat"
+    compile "org.grails:grails-dependencies", noCache
     compile "org.grails:grails-web-boot"
     compile "org.grails:grails-logging"
     compile "org.grails:grails-plugin-rest"
@@ -63,19 +75,23 @@ dependencies {
     compile "org.grails.plugins:scaffolding"
     compile "org.grails.plugins:events"
     compile "org.grails.plugins:hibernate5"
-
-    if(!inplace) {
-        compile "au.org.ala:alerts:1.0.1-NBN-FFTF-SNAPSHOT"
-    }
-
     compile "org.hibernate:hibernate-core:5.1.16.Final"
+    compile "org.hibernate:hibernate-ehcache:5.1.16.Final"
+    if(!inplace) {
+        compile "au.org.ala:alerts:1.0.1-NBN-FFTF-SNAPSHOT", noCache
+    }
     compile "org.grails.plugins:gsp"
     compile 'org.grails.plugins:external-config:1.1.1'
     console "org.grails:grails-console"
     profile "org.grails.profiles:web"
     runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.14.2"
     runtime "com.h2database:h2"
-    testCompile "org.grails:grails-plugin-testing"
+    runtime "org.apache.tomcat:tomcat-jdbc"
+    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.15.1"
+
+    //compile "org.grails.plugins:grails-plugin-converters" // only needed for grails 3.3
+    //testCompile "org.grails:grails-plugin-testing"
+    testCompile "org.grails:grails-gorm-testing-support"
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
