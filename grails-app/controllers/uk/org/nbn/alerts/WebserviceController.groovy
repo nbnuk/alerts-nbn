@@ -8,7 +8,8 @@ import org.apache.http.HttpStatus
 
 class WebserviceController extends au.org.ala.alerts.WebserviceController{
 
-    def createBiocacheNewAnnotationsAlert = {
+    @Override
+    def createBiocacheNewAnnotationsAlert() {
         log.debug("Create biocache new annotations alert for " + params.resourceName ?: "all resources")
         //biocacheWebserviceQueryPath, String biocacheUIQueryPath, String queryDisplayName
         def error = ""

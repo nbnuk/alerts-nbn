@@ -8,6 +8,7 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class UserService extends au.org.ala.alerts.UserService{
 
+    @Override
     def getUserAlertsConfig(User user) {
 
         def map = super.getUserAlertsConfig(user)
@@ -17,12 +18,15 @@ class UserService extends au.org.ala.alerts.UserService{
         map
     }
 
+    @Override
     User getUser(userDetailsParam = null) {
         def user = super.getUser(userDetailsParam)
-        def query  = Query.findByName("Blogs and News")
-        def notification = Notification.findByUserAndQuery(user,query);
-        if (notification) {
-            notification.delete(flush: true)
+        if (user) {
+            def query = Query.findByName("Blogs and News")
+            def notification = Notification.findByUserAndQuery(user, query);
+            if (notification) {
+                notification.delete(flush: true)
+            }
         }
         user
     }
