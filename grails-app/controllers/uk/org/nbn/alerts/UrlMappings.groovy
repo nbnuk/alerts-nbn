@@ -5,8 +5,13 @@ class UrlMappings {
 
     static mappings = {
         "/wsopen/alerts/user/$userId"(controller: 'webservice', action: [GET: 'getUserAlertsOutsideCAS'])
-        "/api/savedSearch/create"(controller: 'savedSearch', action: [POST: 'create'])
-        "/savedSearch/list"(controller: 'savedSearch', action: [GET: 'list'])
+
+
+        group "/api/savedSearch", {
+            "/list/$userId"(controller: 'savedSearch', action: 'list', method: 'GET')
+            "/save"(controller: 'savedSearch', action: 'save', method: 'POST')
+            // other saved search endpoints...
+        }
 
     }
 }
