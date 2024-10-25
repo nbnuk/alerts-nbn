@@ -26,20 +26,27 @@ class SavedSearchController {
     @RequireApiKey
     def list() {
         if (!params.userId) {
-            response.status = HttpStatus.SC_BAD_REQUEST
-            render([error: "userId is a required parameter"] as JSON)
+            flash.errorMessage = "userId is a required parameter"
+            redirect(action: "index")
             return
         }
 
         def user = User.findByUserId(params.userId)
         if (!user) {
-            response.status = HttpStatus.SC_BAD_REQUEST
-            render([error: "userId not found"] as JSON)
+            flash.errorMessage = "User not found"
+            redirect(action: "index")
             return
         }
 
         def savedSearches = savedSearchService.getSavedSearch(params.userId)
-        render(savedSearches as JSON)
+
+        // Check if the request is AJAX
+        if (request.isXhr()) {
+            render(template: "savedSearchList", model: [savedSearches: savedSearches])
+        } else {
+            // Render the full mySavedSearches view
+            render(view: "mySavedSearches", model: [savedSearches: savedSearches, user: user])
+        }
     }
 
     @RequireApiKey
@@ -57,14 +64,11 @@ class SavedSearchController {
             return
         }
 
-        try {
-            def savedSearch = savedSearchService.createSavedSearch(user.userId, params.name, params.description, params.searchRequestQueryUI)
-            render([success: true, id: savedSearch.id] as JSON)
-        } catch (Exception e) {
-            response.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
-            render([error: e.message] as JSON)
-        }
+        def savedSearch = savedSearchService.createSavedSearch(user.userId, params.name, params.description, params.searchRequestQueryUI)
+        render([success: true, id: savedSearch.id] as JSON)
     }
+
+
 
     @RequireApiKey
     def update() {
@@ -74,13 +78,9 @@ class SavedSearchController {
             return
         }
 
-        try {
-            def updatedSearch = savedSearchService.updateSavedSearch(params.id, params.userId, params.name, params.description, params.searchRequestQueryUI)
-            render([success: true, id: updatedSearch.id] as JSON)
-        } catch (Exception e) {
-            response.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
-            render([error: e.message] as JSON)
-        }
+        def updatedSearch = savedSearchService.updateSavedSearch(params.id, params.userId, params.name, params.description, params.searchRequestQueryUI)
+        render([success: true, id: updatedSearch.id] as JSON)
+
     }
 
     @RequireApiKey
@@ -91,13 +91,9 @@ class SavedSearchController {
             return
         }
 
-        try {
-            savedSearchService.deleteSavedSearch(params.id, params.userId)
-            render([success: true] as JSON)
-        } catch (Exception e) {
-            response.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
-            render([error: e.message] as JSON)
-        }
+        savedSearchService.deleteSavedSearch(params.id, params.userId)
+        render([success: true] as JSON)
+
     }
 
     @RequireApiKey
@@ -108,7 +104,6 @@ class SavedSearchController {
             return
         }
 
-        try {
             def savedSearch = savedSearchService.getSavedSearchById(params.id, params.userId)
             if (savedSearch) {
                 render(savedSearch as JSON)
@@ -116,10 +111,7 @@ class SavedSearchController {
                 response.status = HttpStatus.SC_NOT_FOUND
                 render([error: "Saved search not found"] as JSON)
             }
-        } catch (Exception e) {
-            response.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
-            render([error: e.message] as JSON)
-        }
+
     }
 
     @RequireApiKey
