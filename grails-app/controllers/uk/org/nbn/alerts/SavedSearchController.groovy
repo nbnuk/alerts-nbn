@@ -114,4 +114,8 @@ class SavedSearchController {
         render(view: "create")
     }
     
+    def mySavedSearches() {
+        def savedSearches = savedSearchService.getSavedSearch(params.userId)
+        render(view: "mySavedSearches", model: [savedSearches: savedSearches])
+    }
 }

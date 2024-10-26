@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="au.org.ala.alerts.SavedSearch" %>
+<%@ page import="uk.org.nbn.alerts.SavedSearch" %>
 <!doctype html>
 <html>
     <head>
@@ -10,6 +10,19 @@
         <g:set var="userPrefix" value="${adminUser ? user.email : 'My' }"/>
         <title>${userPrefix} saved searches | ${grailsApplication.config.skin.orgNameLong}</title>
         <asset:stylesheet href="alerts.css"/>
+        <style>
+            .table-custom-width {
+                width: 100%;
+            }
+            .table-custom-width th:nth-child(1),
+            .table-custom-width th:nth-child(2),
+            .table-custom-width th:nth-child(3) {
+                width: 26.67%; /* 80% / 3 */
+            }
+            .table-custom-width th:nth-child(4) {
+                width: 20%;
+            }
+        </style>
     </head>
     <body>
       <div id="content">
@@ -27,27 +40,35 @@
           <div id="page-body" role="main">
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Search Name</th>
-                                <th>Description</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="savedSearches">
-                        <g:each in="${savedSearches}" status="i" var="search">
-                            <tr class="${(i % 2) == 0 ? 'odd' : 'even'}" id='search-${search.id}'>
-                                <td>${search.name}</td>
-                                <td>${search.description}</td>
-                                <td class="searchActions">
-                                    <button class="btn btn-primary btn-sm editSearch" data-id="${search.id}">Edit</button>
-                                    <button class="btn btn-danger btn-sm deleteSearch" data-id="${search.id}">Delete</button>
-                                </td>
-                            </tr>
-                        </g:each>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-custom-width">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Query</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="savedSearches">
+                            <g:each in="${savedSearches}" status="i" var="search">
+                                <tr class="${(i % 2) == 0 ? 'odd' : 'even'}" id='search-${search.id}'>
+                                    <td data-label="Name">${search.name}</td>
+                                    <td data-label="Description">${search.description}</td>
+                                    <td data-label="Query">
+                                        <textarea rows="3" readonly class="form-control">${search.searchRequestQueryUI}</textarea>
+                                    </td>
+                                    <td data-label="Actions" class="searchActions">
+                                        <div class="d-flex flex-column flex-sm-row">
+                                            <button class="btn btn-primary btn-sm editSearch mb-2 mb-sm-0 me-sm-2" data-id="${search.id}">Edit</button>
+                                            <button class="btn btn-danger btn-sm deleteSearch" data-id="${search.id}">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </g:each>
+                            </tbody>
+                        </table>
+                    </div>
                     <button id="addNewSearch" class="btn btn-success">Add New Search</button>
                  </div>
             </div>
