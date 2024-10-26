@@ -39,14 +39,7 @@ class SavedSearchController {
         }
 
         def savedSearches = savedSearchService.getSavedSearch(params.userId)
-
-        // Check if the request is AJAX
-        if (request.isXhr()) {
-            render(template: "savedSearchList", model: [savedSearches: savedSearches])
-        } else {
-            // Render the full mySavedSearches view
-            render(view: "mySavedSearches", model: [savedSearches: savedSearches, user: user])
-        }
+        render savedSearches as JSON
     }
 
     @RequireApiKey
@@ -96,7 +89,7 @@ class SavedSearchController {
 
     }
 
-    @RequireApiKey
+ @RequireApiKey
     def edit() {
         if (!params.id || !params.userId) {
             response.status = HttpStatus.SC_BAD_REQUEST
@@ -120,5 +113,5 @@ class SavedSearchController {
         // The actual creation is handled by the 'save' action
         render(view: "create")
     }
-
+    
 }
