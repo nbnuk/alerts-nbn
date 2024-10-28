@@ -30,7 +30,7 @@ class SavedSearchService {
     }
 
     def getSavedSearch(String userId) {
-        SavedSearch.findAllByUserId(userId)
+            SavedSearch.findAllByUserId(userId)
     }
 
     def updateSavedSearch(String id, String userId, String name, String description, String searchRequestQueryUI) {

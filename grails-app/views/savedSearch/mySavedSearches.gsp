@@ -60,7 +60,13 @@
                                     </td>
                                     <td data-label="Actions" class="searchActions">
                                         <div class="d-flex flex-column flex-sm-row">
-                                            <button class="btn btn-primary btn-sm editSearch mb-2 mb-sm-0 me-sm-2" data-id="${search.id}">Edit</button>
+                                            <g:link class="btn btn-primary btn-sm mb-2 mb-sm-0 me-sm-2"
+                                                    controller="savedSearch"
+                                                    action="edit"
+                                                    id="${search.id}"
+                                                    params="[id: search.id, userId: params.userId]">
+                                                Edit
+                                            </g:link>
                                             <button class="btn btn-danger btn-sm deleteSearch" data-id="${search.id}">Delete</button>
                                         </div>
                                     </td>
@@ -77,46 +83,51 @@
       <asset:javascript src="alerts.js"/>
       <asset:script type="text/javascript">
         $(document).ready(function() {
-            const baseUrl = '${createLink(controller: "savedSearch", action: "")}';
+            // Use absolute URL path for delete
+            const deleteUrl = '${createLink(absolute: true, controller: "savedSearch", action: "delete")}';
+            const createUrl = '${createLink(absolute: true, controller: "savedSearch", action: "create", params: [userId: params.userId])}';  // Add userId here
+            const listUrl = '${createLink(absolute: true, controller: "savedSearch", action: "list")}';
 
             function refreshTable() {
-                $.get(baseUrl + '/list', function(data) {
+                $.get(listUrl, function(data) {
                     $('#savedSearches').html(data);
                 });
             }
 
             $('#addNewSearch').click(function() {
-                // Open a modal or redirect to a new page for adding a search
-                window.location.href = baseUrl + '/create';
-            });
-
-            $(document).on('click', '.editSearch', function() {
-                const searchId = $(this).data('id');
-                window.location.href = baseUrl + '/edit/' + searchId;
+                window.location.href = createUrl;  // This will now include the userId
             });
 
             $(document).on('click', '.deleteSearch', function() {
                 const searchId = $(this).data('id');
                 if (confirm('Are you sure you want to delete this saved search?')) {
                     $.ajax({
-                        url: baseUrl + '/delete/' + searchId,
+                        url: deleteUrl + '/' + searchId,
                         method: 'POST',
+                        data: {
+                            userId: '${params.userId}',
+                            id: searchId
+                        },
                         success: function(response) {
                             if (response.success) {
                                 $('#search-' + searchId).remove();
+                                // Add flash message
+                                const flashMessage = '<div class="alert alert-info">' + response.message + '</div>';
+                                // Remove any existing flash messages
+                                $('.alert').remove();
+                                // Add the new flash message after the header
+                                $('#page-header').after(flashMessage);
                             } else {
                                 alert('Error deleting saved search: ' + response.message);
                             }
                         },
-                        error: function() {
-                            alert('An error occurred while deleting the saved search.');
+                        error: function(xhr, status, error) {
+                            console.error('Delete error:', xhr.responseText);
+                            alert('An error occurred while deleting the saved search: ' + error);
                         }
                     });
                 }
             });
-
-            // Refresh the table periodically (optional)
-            // setInterval(refreshTable, 30000);
         });
       </asset:script>
     </body>

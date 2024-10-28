@@ -7,12 +7,22 @@ import grails.converters.JSON
 import org.apache.http.HttpStatus
 
 
+
 /**
  * Controller for managing saved searches.
  */
 class SavedSearchController {
 
-    static allowedMethods = [list: "GET", save: "POST", update: "POST", delete: "POST"]
+    static scaffold = SavedSearch
+
+    static allowedMethods = [
+        list: "GET",
+        save: "POST",
+        updateApi: "POST",
+        update: ["POST", "PUT"],
+        delete: "POST",
+        mySavedSearches: "GET"
+    ]
 
     def savedSearchService
     def authService
@@ -45,26 +55,38 @@ class SavedSearchController {
     @RequireApiKey
     def save() {
         if (!params.userId) {
-            response.status = HttpStatus.SC_BAD_REQUEST
-            render([error: "userId is a required parameter to save a search"] as JSON)
+            flash.errorMessage = "userId is a required parameter to save a search"
+            redirect(action: "mySavedSearches", params: [userId: params.userId])  // Add userId to redirect
             return
         }
 
-        def user = User.findByUserId(params.userId)
-        if (!user) {
-            response.status = HttpStatus.SC_BAD_REQUEST
-            render([error: "userId not found"] as JSON)
+        def currentUser = User.findByUserId(params.userId)
+        if (!currentUser) {
+            flash.errorMessage = "User not found"
+            redirect(action: "mySavedSearches", params: [userId: params.userId])  // Add userId to redirect
             return
         }
 
-        def savedSearch = savedSearchService.createSavedSearch(user.userId, params.name, params.description, params.searchRequestQueryUI)
-        render([success: true, id: savedSearch.id] as JSON)
+        try {
+            def savedSearch = savedSearchService.createSavedSearch(
+                params.userId,
+                params.name,
+                params.description,
+                params.searchRequestQueryUI
+            )
+
+            flash.message = "Search saved successfully"
+            redirect(action: "mySavedSearches", params: [userId: params.userId])  // This ensures we go back to My Saved Searches
+        } catch (Exception e) {
+            flash.errorMessage = "Error saving search: ${e.message}"
+            render(view: "create", model: [savedSearch: params])
+        }
     }
 
 
 
     @RequireApiKey
-    def update() {
+    def updateApi() {
         if (!params.id || !params.userId) {
             response.status = HttpStatus.SC_BAD_REQUEST
             render([error: "id and userId are required parameters"] as JSON)
@@ -73,23 +95,42 @@ class SavedSearchController {
 
         def updatedSearch = savedSearchService.updateSavedSearch(params.id, params.userId, params.name, params.description, params.searchRequestQueryUI)
         render([success: true, id: updatedSearch.id] as JSON)
-
     }
 
     @RequireApiKey
     def delete() {
         if (!params.id || !params.userId) {
             response.status = HttpStatus.SC_BAD_REQUEST
+            render([error: "id and userId are required parameters", success: false] as JSON)
+            return
+        }
+
+        try {
+            savedSearchService.deleteSavedSearch(params.id, params.userId)
+            render([success: true, message: "Search deleted successfully"] as JSON)
+        } catch (Exception e) {
+            response.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+            render([error: "Failed to delete search", success: false] as JSON)
+        }
+    }
+
+ @RequireApiKey
+    def editApi() {
+        if (!params.id || !params.userId) {
+            response.status = HttpStatus.SC_BAD_REQUEST
             render([error: "id and userId are required parameters"] as JSON)
             return
         }
 
-        savedSearchService.deleteSavedSearch(params.id, params.userId)
-        render([success: true] as JSON)
-
+        def savedSearch = savedSearchService.getSavedSearchById(params.id, params.userId)
+        if (savedSearch) {
+            render(savedSearch as JSON)
+        } else {
+            response.status = HttpStatus.SC_NOT_FOUND
+            render([error: "Saved search not found"] as JSON)
+        }
     }
 
- @RequireApiKey
     def edit() {
         if (!params.id || !params.userId) {
             response.status = HttpStatus.SC_BAD_REQUEST
@@ -97,25 +138,99 @@ class SavedSearchController {
             return
         }
 
-            def savedSearch = savedSearchService.getSavedSearchById(params.id, params.userId)
-            if (savedSearch) {
-                render(savedSearch as JSON)
-            } else {
-                response.status = HttpStatus.SC_NOT_FOUND
-                render([error: "Saved search not found"] as JSON)
-            }
+        def currentUser = User.findByUserId(params.userId)
+        if (!currentUser) {
+            flash.errorMessage = "Please log in to edit saved searches"
+            redirect(action: "mySavedSearches")
+            return
+        }
 
+        def savedSearch = savedSearchService.getSavedSearchById(params.id, params.userId)
+
+        // Check if the search exists
+        if (!savedSearch) {
+            flash.errorMessage = "Saved search not found"
+            redirect(action: "mySavedSearches")
+            return
+        }
+
+        // Check if the current user owns this search
+        if (savedSearch.userId != currentUser.userId) {
+            flash.errorMessage = "You don't have permission to edit this saved search"
+            redirect(action: "mySavedSearches")
+            return
+        }
+
+        [savedSearch: savedSearch]
     }
 
-    @RequireApiKey
-    def create() {
-        // This action is for rendering the create form
-        // The actual creation is handled by the 'save' action
-        render(view: "create")
+    def update(Long id) {
+        def currentUser = User.findByUserId(params.userId)
+        if (!currentUser) {
+            flash.errorMessage = "Please log in to update saved searches"
+            redirect(action: "mySavedSearches", params: [userId: params.userId])
+            return
+        }
+
+        def savedSearch = SavedSearch.get(id)
+
+        if (!savedSearch) {
+            flash.errorMessage = "Saved search not found"
+            redirect(action: "mySavedSearches", params: [userId: params.userId])
+            return
+        }
+
+        if (savedSearch.userId != currentUser.userId) {
+            flash.errorMessage = "You don't have permission to edit this saved search"
+            redirect(action: "mySavedSearches", params: [userId: params.userId])
+            return
+        }
+
+        // Only update allowed fields
+        savedSearch.name = params.name
+        savedSearch.description = params.description
+        savedSearch.searchRequestQueryUI = params.searchRequestQueryUI
+
+        if (savedSearch.save(flush: true)) {
+            flash.message = "Saved search updated successfully"
+            redirect(action: "mySavedSearches", params: [userId: params.userId])
+        } else {
+            flash.errorMessage = "Error updating saved search"
+            render(view: "edit", model: [savedSearch: savedSearch])
+        }
     }
-    
+
     def mySavedSearches() {
+        def currentUser = User.findByUserId(params.userId)
+        if (!currentUser) {
+            flash.errorMessage = "User not found"
+            redirect(uri: "/")
+            return
+        }
+
         def savedSearches = savedSearchService.getSavedSearch(params.userId)
-        render(view: "mySavedSearches", model: [savedSearches: savedSearches])
+
+        [
+            savedSearches: savedSearches,
+            user: currentUser,
+            adminUser: false  // Set this based on your requirements
+        ]
+    }
+
+    def create() {
+        if (!params.userId) {
+            flash.errorMessage = "userId is required"
+            redirect(uri: "/")
+            return
+        }
+
+        def currentUser = User.findByUserId(params.userId)
+        if (!currentUser) {
+            flash.errorMessage = "User not found"
+            redirect(uri: "/")
+            return
+        }
+
+        render(view: "create", model: [userId: params.userId])
     }
 }
