@@ -10,19 +10,7 @@
         <g:set var="userPrefix" value="${adminUser ? user.email : 'My' }"/>
         <title>${userPrefix} saved searches | ${grailsApplication.config.skin.orgNameLong}</title>
         <asset:stylesheet href="alerts.css"/>
-        <style>
-            .table-custom-width {
-                width: 100%;
-            }
-            .table-custom-width th:nth-child(1),
-            .table-custom-width th:nth-child(2),
-            .table-custom-width th:nth-child(3) {
-                width: 26.67%; /* 80% / 3 */
-            }
-            .table-custom-width th:nth-child(4) {
-                width: 20%;
-            }
-        </style>
+        <asset:stylesheet href="mySavedSearches.css"/>
     </head>
     <body>
       <div id="content">
@@ -40,43 +28,66 @@
           <div id="page-body" role="main">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-custom-width">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Query</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="savedSearches">
-                            <g:each in="${savedSearches}" status="i" var="search">
-                                <tr class="${(i % 2) == 0 ? 'odd' : 'even'}" id='search-${search.id}'>
-                                    <td data-label="Name">${search.name}</td>
-                                    <td data-label="Description">${search.description}</td>
-                                    <td data-label="Query">
-                                        <textarea rows="3" readonly class="form-control">${search.searchRequestQueryUI}</textarea>
-                                    </td>
-                                    <td data-label="Actions" class="searchActions">
-                                        <div class="d-flex flex-column flex-sm-row">
-                                            <g:link class="btn btn-primary btn-sm mb-2 mb-sm-0 me-sm-2"
-                                                    controller="savedSearch"
-                                                    action="edit"
-                                                    id="${search.id}"
-                                                    params="[id: search.id, userId: params.userId]">
-                                                Edit
-                                            </g:link>
-                                            <button class="btn btn-danger btn-sm deleteSearch" data-id="${search.id}">Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </g:each>
-                            </tbody>
-                        </table>
-                    </div>
-                    <button id="addNewSearch" class="btn btn-success">Add New Search</button>
-                 </div>
+                    <button id="addNewSearch" class="btn btn-success mb-4">
+                        <i class="fas fa-plus"></i> Add New Search
+                    </button>
+
+                    <g:if test="${!savedSearches}">
+                        <div class="empty-state">
+                            <h3>No Saved Searches Yet</h3>
+                            <p class="text-muted">Create your first saved search to get started!</p>
+                            <button id="addFirstSearch" class="btn btn-primary mt-3">
+                                <i class="fas fa-plus"></i> Create First Search
+                            </button>
+                        </div>
+                    </g:if>
+                    <g:else>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-custom-width">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Query</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="savedSearches">
+                                <g:each in="${savedSearches}" status="i" var="search">
+                                    <tr class="search-card" id='search-${search.id}'>
+                                        <td data-label="Name">
+                                            <strong>${search.name}</strong>
+                                        </td>
+                                        <td data-label="Description">
+                                            ${search.description}
+                                        </td>
+                                        <td data-label="Query">
+                                            <textarea rows="3" readonly
+                                                class="form-control query-textarea"
+                                                >${search.searchRequestQueryUI}</textarea>
+                                        </td>
+                                        <td data-label="Actions" class="action-buttons">
+                                            <div class="btn-group">
+                                                <g:link class="btn btn-outline-primary btn-sm"
+                                                        controller="savedSearch"
+                                                        action="edit"
+                                                        id="${search.id}"
+                                                        params="[id: search.id, userId: params.userId]">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </g:link>
+                                                <button class="btn btn-outline-danger btn-sm deleteSearch"
+                                                        data-id="${search.id}">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </g:each>
+                                </tbody>
+                            </table>
+                        </div>
+                    </g:else>
+                </div>
             </div>
           </div>
       </div>
