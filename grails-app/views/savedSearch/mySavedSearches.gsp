@@ -91,13 +91,35 @@
             </div>
           </div>
       </div>
+
+      <%-- Add this modal HTML just before closing body tag --%>
+      <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                      <h4 class="modal-title">Confirm Deletion</h4>
+                  </div>
+                  <div class="modal-body">
+                      <p>Are you sure you want to delete this saved search?</p>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                      <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
       <asset:javascript src="alerts.js"/>
       <asset:script type="text/javascript">
         $(document).ready(function() {
-            // Use absolute URL path for delete
             const deleteUrl = '${createLink(absolute: true, controller: "savedSearch", action: "delete")}';
-            const createUrl = '${createLink(absolute: true, controller: "savedSearch", action: "create", params: [userId: params.userId])}';  // Add userId here
+            const createUrl = '${createLink(absolute: true, controller: "savedSearch", action: "create", params: [userId: params.userId])}';
             const listUrl = '${createLink(absolute: true, controller: "savedSearch", action: "list")}';
+            let searchIdToDelete = null;
 
             function refreshTable() {
                 $.get(listUrl, function(data) {
@@ -105,39 +127,56 @@
                 });
             }
 
-            $('#addNewSearch').click(function() {
-                window.location.href = createUrl;  // This will now include the userId
+            $('#addNewSearch, #addFirstSearch').click(function() {
+                window.location.href = createUrl;
             });
 
+            // Show modal when delete button is clicked
             $(document).on('click', '.deleteSearch', function() {
-                const searchId = $(this).data('id');
-                if (confirm('Are you sure you want to delete this saved search?')) {
+                searchIdToDelete = $(this).data('id');
+                $('#deleteConfirmModal').modal('show');
+            });
+
+            // Handle delete confirmation
+            $('#confirmDelete').click(function() {
+                if (searchIdToDelete) {
                     $.ajax({
-                        url: deleteUrl + '/' + searchId,
+                        url: deleteUrl + '/' + searchIdToDelete,
                         method: 'POST',
                         data: {
                             userId: '${params.userId}',
-                            id: searchId
+                            id: searchIdToDelete
                         },
                         success: function(response) {
+                            $('#deleteConfirmModal').modal('hide');
                             if (response.success) {
-                                $('#search-' + searchId).remove();
-                                // Add flash message
-                                const flashMessage = '<div class="alert alert-info">' + response.message + '</div>';
-                                // Remove any existing flash messages
-                                $('.alert').remove();
-                                // Add the new flash message after the header
-                                $('#page-header').after(flashMessage);
+                                $('#search-' + searchIdToDelete).fadeOut(300, function() {
+                                    $(this).remove();
+                                    const flashMessage = '<div class="alert alert-info">' + response.message + '</div>';
+                                    $('.alert').remove();
+                                    $('#page-header').after(flashMessage);
+
+                                    // Show empty state if no searches left
+                                    if ($('#savedSearches tr').length === 0) {
+                                        location.reload();
+                                    }
+                                });
                             } else {
                                 alert('Error deleting saved search: ' + response.message);
                             }
                         },
                         error: function(xhr, status, error) {
+                            $('#deleteConfirmModal').modal('hide');
                             console.error('Delete error:', xhr.responseText);
                             alert('An error occurred while deleting the saved search: ' + error);
                         }
                     });
                 }
+            });
+
+            // Clear searchIdToDelete when modal is hidden
+            $('#deleteConfirmModal').on('hidden.bs.modal', function () {
+                searchIdToDelete = null;
             });
         });
       </asset:script>
