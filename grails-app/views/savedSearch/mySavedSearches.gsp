@@ -14,76 +14,81 @@
     </head>
     <body>
       <div id="content">
-          <g:if test="${flash.message}">
-              <div class="alert alert-info">${flash.message}</div>
-          </g:if>
-          <g:if test="${flash.errorMessage}">
-              <div class="alert alert-danger">${flash.errorMessage}</div>
-          </g:if>
-          <div id="page-body" role="main">
-            <div class="row">
-                <div class="col-md-12">
-                    <button id="addNewSearch" class="btn btn-success mb-4">
-                        <i class="fa fa-plus"></i> Add New Search
-                    </button>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                      <div>
+                          <button id="addNewSearch" class="btn btn-primary">
+                              <i class="fa fa-plus"></i> Add New Search
+                          </button>
+                      </div>
+                  </div>
 
-                    <g:if test="${!savedSearches}">
-                        <div class="empty-state">
-                            <h3>No Saved Searches Yet</h3>
-                            <p class="text-muted">Create your first saved search to get started!</p>
-                            <button id="addFirstSearch" class="btn btn-primary mt-3">
-                                <i class="fa fa-plus"></i> Create First Search
-                            </button>
-                        </div>
-                    </g:if>
-                    <g:else>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-custom-width">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Query</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="savedSearches">
-                                <g:each in="${savedSearches}" status="i" var="search">
-                                    <tr class="search-card" id='search-${search.id}'>
-                                        <td data-label="Name">
-                                            <strong>${search.name}</strong>
-                                        </td>
-                                        <td data-label="Description">
-                                            ${search.description}
-                                        </td>
-                                        <td data-label="Query">
-                                            <textarea rows="3" readonly
-                                                class="form-control query-textarea highlighted-query"
-                                                >${search.searchRequestQueryUI}</textarea>
-                                        </td>
-                                        <td data-label="Actions" class="action-buttons">
-                                            <div class="btn-group">
-                                                <g:link class="btn btn-outline-primary btn-sm"
-                                                        controller="savedSearch"
-                                                        action="edit"
-                                                        id="${search.id}"
-                                                        params="[id: search.id, userId: params.userId]">
-                                                    <i class="fa fa-edit"></i> Edit
-                                                </g:link>
-                                                <button class="btn btn-outline-danger btn-sm deleteSearch"
-                                                        data-id="${search.id}">
-                                                    <i class="fa fa-trash"></i> Delete
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </g:each>
-                                </tbody>
-                            </table>
-                        </div>
-                    </g:else>
-                </div>
-            </div>
+                  <g:if test="${flash.message}">
+                      <div class="alert alert-info">${flash.message}</div>
+                  </g:if>
+                  <g:if test="${flash.errorMessage}">
+                      <div class="alert alert-danger">${flash.errorMessage}</div>
+                  </g:if>
+
+                  <g:if test="${!savedSearches}">
+                      <div class="empty-state">
+                          <h3>No Saved Searches</h3>
+                          <p class="text-muted">You haven't saved any searches yet. Create your first search to get started.</p>
+                          <button id="addFirstSearch" class="btn btn-primary mt-3">
+                              <i class="fa fa-plus"></i> Create First Search
+                          </button>
+                      </div>
+                  </g:if>
+                  <g:else>
+                      <div class="table-responsive">
+                          <table class="table table-hover table-custom-width">
+                              <thead>
+                                  <tr>
+                                      <th style="width: 20%">Name</th>
+                                      <th style="width: 25%">Description</th>
+                                      <th style="width: 40%">Query</th>
+                                      <th style="width: 15%">Actions</th>
+                                  </tr>
+                              </thead>
+                              <tbody id="savedSearches">
+                                  <g:each in="${savedSearches}" status="i" var="search">
+                                      <tr class="search-card" id='search-${search.id}'>
+                                          <td>
+                                              <strong>${search.name}</strong>
+                                          </td>
+                                          <td>${search.description}</td>
+                                          <td>
+                                              <textarea rows="2" readonly
+                                                  class="form-control query-textarea"
+                                                  >${search.searchRequestQueryUI}</textarea>
+                                          </td>
+                                          <td>
+                                              <div class="btn-group">
+                                                  <g:link class="btn btn-primary btn-sm"
+                                                          controller="savedSearch"
+                                                          action="edit"
+                                                          id="${search.id}"
+                                                          params="[id: search.id, userId: params.userId]"
+                                                          data-toggle="tooltip"
+                                                          title="Edit this saved search">
+                                                      <i class="fa fa-edit"></i> Edit
+                                                  </g:link>
+                                                  <button class="btn btn-outline-danger btn-sm deleteSearch"
+                                                          data-id="${search.id}"
+                                                          data-toggle="tooltip"
+                                                          title="Delete this saved search">
+                                                      <i class="fa fa-trash"></i> Delete
+                                                  </button>
+                                              </div>
+                                          </td>
+                                      </tr>
+                                  </g:each>
+                              </tbody>
+                          </table>
+                      </div>
+                  </g:else>
+              </div>
           </div>
       </div>
 
@@ -173,6 +178,9 @@
             $('#deleteConfirmModal').on('hidden.bs.modal', function () {
                 searchIdToDelete = null;
             });
+
+            // Initialize all tooltips
+            $('[data-toggle="tooltip"]').tooltip();
         });
       </asset:script>
     </body>
