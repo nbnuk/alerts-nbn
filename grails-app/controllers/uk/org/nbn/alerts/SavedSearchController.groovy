@@ -17,7 +17,6 @@ class SavedSearchController {
     static allowedMethods = [
         list: "GET",
         save: "POST",
-        updateApi: "POST",
         update: ["POST", "PUT"],
         delete: "POST",
         mySavedSearches: "GET"
@@ -35,15 +34,15 @@ class SavedSearchController {
     @RequireApiKey
     def list() {
         if (!params.userId) {
-            flash.errorMessage = "userId is a required parameter"
-            redirect(action: "index")
+            response.status = HttpStatus.SC_BAD_REQUEST
+            render([error: "userId is a required parameter"] as JSON)
             return
         }
 
         def user = User.findByUserId(params.userId)
         if (!user) {
-            flash.errorMessage = "User not found"
-            redirect(action: "index")
+            response.status = HttpStatus.SC_NOT_FOUND
+            render([error: "User not found"] as JSON)
             return
         }
 
@@ -52,7 +51,7 @@ class SavedSearchController {
     }
 
     @RequireApiKey
-    def create() {
+    def save() {
         if (!params.userId) {
             flash.errorMessage = "userId is a required parameter to save a search"
             redirect(action: "mySavedSearches", params: [userId: params.userId])  // Add userId to redirect
@@ -67,19 +66,17 @@ class SavedSearchController {
         }
 
 
-            def savedSearch = savedSearchService.createSavedSearch(
-                params.userId,
-                params.name,
-                params.description,
-                params.searchRequestQueryUI
-            )
+        def savedSearch = savedSearchService.createSavedSearch(
+            params.userId,
+            params.name,
+            params.description,
+            params.searchRequestQueryUI
+        )
 
-            flash.message = "Search saved successfully"
-            redirect(action: "mySavedSearches", params: [userId: params.userId])  // This ensures we go back to My Saved Searches
+        flash.message = "Search saved successfully"
+        redirect(action: "mySavedSearches", params: [userId: params.userId])  // This ensures we go back to My Saved Searches
 
     }
-
-
 
 
     @RequireApiKey
@@ -92,10 +89,10 @@ class SavedSearchController {
 
         savedSearchService.deleteSavedSearch(params.id, params.userId)
         render([success: true, message: "Search deleted successfully"] as JSON)
-
     }
 
- @RequireApiKey
+
+    @RequireApiKey
     def edit() {
         if (!params.id || !params.userId) {
             response.status = HttpStatus.SC_BAD_REQUEST
@@ -165,7 +162,22 @@ class SavedSearchController {
         }
     }
 
+    def mySavedSearches() {
+        def currentUser = User.findByUserId(params.userId)
+        if (!currentUser) {
+            flash.errorMessage = "User not found"
+            redirect(uri: "/")
+            return
+        }
 
+        def savedSearches = savedSearchService.getSavedSearch(params.userId)
+
+        [
+            savedSearches: savedSearches,
+            user: currentUser,
+            adminUser: false  // Set this based on your requirements
+        ]
+    }
 
     def create() {
         if (!params.userId) {
