@@ -13,7 +13,6 @@ import org.apache.http.HttpStatus
  */
 class SavedSearchController {
 
-    static scaffold = SavedSearch
 
     static allowedMethods = [
         list: "GET",
