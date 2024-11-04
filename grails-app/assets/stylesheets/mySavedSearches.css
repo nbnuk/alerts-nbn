@@ -13,8 +13,10 @@
     font-size: 0.9em;
     resize: vertical;
     min-height: 60px;
-    background-color: #f8f9fa;
+    background-color: #f0e54e40 !important;
     border: 1px solid #dee2e6;
+    padding: 10px;
+    border-radius: 6px;
 }
 
 .search-card {
@@ -27,8 +29,21 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+.action-buttons .btn-group {
+    gap: 8px;
+    display: flex;
+}
+
 .action-buttons .btn {
-    min-width: 80px;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    min-width: 120px;
+    height: 38px;
+    line-height: 1.2;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .empty-state {
@@ -72,4 +87,319 @@
     .action-buttons {
         text-align: center;
     }
+}
+
+.btn-outline-danger.deleteSearch {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+    position: relative;
+}
+
+.btn-outline-danger.deleteSearch .fa-trash {
+    font-size: 1.2em;
+    margin-right: 8px;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 1px rgba(255,255,255,0.5));
+}
+
+.btn-outline-danger.deleteSearch:hover .fa-trash {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+.btn-outline-danger.deleteSearch:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-outline-danger.deleteSearch::after {
+    content: "This will delete your saved search";
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 1050;
+}
+
+.btn-outline-danger.deleteSearch:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-outline-danger.deleteSearch::before {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 1050;
+}
+
+.btn-outline-danger.deleteSearch:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-outline-primary {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    position: relative;
+}
+
+.btn-outline-primary .fa-edit {
+    font-size: 1.2em;
+    margin-right: 8px;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 1px rgba(255,255,255,0.5));
+}
+
+.btn-outline-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-outline-primary:hover .fa-edit {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+.btn-outline-primary::after {
+    content: "Edit your saved search";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 1000;
+}
+
+.btn-outline-primary:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-outline-primary::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.btn-outline-primary:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-success#addNewSearch,
+.btn-primary#addFirstSearch,
+.action-buttons .btn {
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    min-width: 120px;
+    height: 38px;
+    line-height: 1.2;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    letter-spacing: 0.3px;
+}
+
+.btn-success#addNewSearch,
+.btn-primary#addFirstSearch {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+    position: relative;
+}
+
+.btn-success#addNewSearch:hover,
+.btn-primary#addFirstSearch:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-success#addNewSearch .fa-plus,
+.btn-primary#addFirstSearch .fa-plus,
+.action-buttons .btn .fa-edit,
+.action-buttons .btn .fa-trash {
+    font-size: 1.1em;
+    margin-right: 10px;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 1px rgba(255,255,255,0.5));
+    line-height: 1;
+}
+
+.btn-success#addNewSearch:hover .fa-plus,
+.btn-primary#addFirstSearch:hover .fa-plus,
+.action-buttons .btn:hover .fa-edit,
+.action-buttons .btn:hover .fa-trash {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+.btn-success#addNewSearch::after,
+.btn-primary#addFirstSearch::after,
+.action-buttons .btn::after {
+    content: "Create a new saved search";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 1000;
+}
+
+.btn-success#addNewSearch:hover::after,
+.btn-primary#addFirstSearch:hover::after,
+.action-buttons .btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-success#addNewSearch::before,
+.btn-primary#addFirstSearch::before,
+.action-buttons .btn::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.btn-success#addNewSearch:hover::before,
+.btn-primary#addFirstSearch:hover::before,
+.action-buttons .btn:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-success#addNewSearch::after,
+.btn-primary#addFirstSearch::after {
+    content: "Create a new saved search";
+}
+
+.btn-outline-primary::after {
+    content: "Edit your saved search";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 1000;
+}
+
+.btn-outline-primary:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-outline-danger.deleteSearch::after {
+    content: "This will delete your saved search";
+}
+
+.btn-success#addNewSearch::after,
+.btn-primary#addFirstSearch::after,
+.btn-outline-primary::after,
+.btn-outline-danger.deleteSearch::after {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 1050;
+}
+
+.btn-success#addNewSearch:hover::after,
+.btn-primary#addFirstSearch:hover::after,
+.btn-outline-primary:hover::after,
+.btn-outline-danger.deleteSearch:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.btn-success#addNewSearch::before,
+.btn-primary#addFirstSearch::before,
+.btn-outline-primary::before,
+.btn-outline-danger.deleteSearch::before {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 1050;
+}
+
+.btn-success#addNewSearch:hover::before,
+.btn-primary#addFirstSearch:hover::before,
+.btn-outline-primary:hover::before,
+.btn-outline-danger.deleteSearch:hover::before {
+    opacity: 1;
+    visibility: visible;
 }

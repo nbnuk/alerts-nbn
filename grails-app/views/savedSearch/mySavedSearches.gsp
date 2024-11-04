@@ -14,11 +14,6 @@
     </head>
     <body>
       <div id="content">
-          <header id="page-header">
-            <div class="inner row-fluid">
-              <h1>${userPrefix} saved searches</h1>
-            </div>
-          </header>
           <g:if test="${flash.message}">
               <div class="alert alert-info">${flash.message}</div>
           </g:if>
@@ -29,7 +24,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <button id="addNewSearch" class="btn btn-success mb-4">
-                        <i class="fas fa-plus"></i> Add New Search
+                        <i class="fa fa-plus"></i> Add New Search
                     </button>
 
                     <g:if test="${!savedSearches}">
@@ -37,7 +32,7 @@
                             <h3>No Saved Searches Yet</h3>
                             <p class="text-muted">Create your first saved search to get started!</p>
                             <button id="addFirstSearch" class="btn btn-primary mt-3">
-                                <i class="fas fa-plus"></i> Create First Search
+                                <i class="fa fa-plus"></i> Create First Search
                             </button>
                         </div>
                     </g:if>
@@ -63,7 +58,7 @@
                                         </td>
                                         <td data-label="Query">
                                             <textarea rows="3" readonly
-                                                class="form-control query-textarea"
+                                                class="form-control query-textarea highlighted-query"
                                                 >${search.searchRequestQueryUI}</textarea>
                                         </td>
                                         <td data-label="Actions" class="action-buttons">
@@ -73,11 +68,11 @@
                                                         action="edit"
                                                         id="${search.id}"
                                                         params="[id: search.id, userId: params.userId]">
-                                                    <i class="fas fa-edit"></i> Edit
+                                                    <i class="fa fa-edit"></i> Edit
                                                 </g:link>
                                                 <button class="btn btn-outline-danger btn-sm deleteSearch"
                                                         data-id="${search.id}">
-                                                    <i class="fas fa-trash"></i> Delete
+                                                    <i class="fa fa-trash"></i> Delete
                                                 </button>
                                             </div>
                                         </td>
