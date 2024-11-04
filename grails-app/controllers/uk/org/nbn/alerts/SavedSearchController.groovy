@@ -52,7 +52,7 @@ class SavedSearchController {
     }
 
     @RequireApiKey
-    def save() {
+    def create() {
         if (!params.userId) {
             flash.errorMessage = "userId is a required parameter to save a search"
             redirect(action: "mySavedSearches", params: [userId: params.userId])  // Add userId to redirect
@@ -84,17 +84,6 @@ class SavedSearchController {
 
 
 
-    @RequireApiKey
-    def updateApi() {
-        if (!params.id || !params.userId) {
-            response.status = HttpStatus.SC_BAD_REQUEST
-            render([error: "id and userId are required parameters"] as JSON)
-            return
-        }
-
-        def updatedSearch = savedSearchService.updateSavedSearch(params.id, params.userId, params.name, params.description, params.searchRequestQueryUI)
-        render([success: true, id: updatedSearch.id] as JSON)
-    }
 
     @RequireApiKey
     def delete() {
@@ -104,32 +93,12 @@ class SavedSearchController {
             return
         }
 
-        try {
-            savedSearchService.deleteSavedSearch(params.id, params.userId)
-            render([success: true, message: "Search deleted successfully"] as JSON)
-        } catch (Exception e) {
-            response.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
-            render([error: "Failed to delete search", success: false] as JSON)
-        }
+        savedSearchService.deleteSavedSearch(params.id, params.userId)
+        render([success: true, message: "Search deleted successfully"] as JSON)
+
     }
 
  @RequireApiKey
-    def editApi() {
-        if (!params.id || !params.userId) {
-            response.status = HttpStatus.SC_BAD_REQUEST
-            render([error: "id and userId are required parameters"] as JSON)
-            return
-        }
-
-        def savedSearch = savedSearchService.getSavedSearchById(params.id, params.userId)
-        if (savedSearch) {
-            render(savedSearch as JSON)
-        } else {
-            response.status = HttpStatus.SC_NOT_FOUND
-            render([error: "Saved search not found"] as JSON)
-        }
-    }
-
     def edit() {
         if (!params.id || !params.userId) {
             response.status = HttpStatus.SC_BAD_REQUEST
@@ -199,22 +168,7 @@ class SavedSearchController {
         }
     }
 
-    def mySavedSearches() {
-        def currentUser = User.findByUserId(params.userId)
-        if (!currentUser) {
-            flash.errorMessage = "User not found"
-            redirect(uri: "/")
-            return
-        }
 
-        def savedSearches = savedSearchService.getSavedSearch(params.userId)
-
-        [
-            savedSearches: savedSearches,
-            user: currentUser,
-            adminUser: false  // Set this based on your requirements
-        ]
-    }
 
     def create() {
         if (!params.userId) {
