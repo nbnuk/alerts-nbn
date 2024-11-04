@@ -66,7 +66,7 @@ class SavedSearchController {
             return
         }
 
-        try {
+
             def savedSearch = savedSearchService.createSavedSearch(
                 params.userId,
                 params.name,
@@ -76,10 +76,7 @@ class SavedSearchController {
 
             flash.message = "Search saved successfully"
             redirect(action: "mySavedSearches", params: [userId: params.userId])  // This ensures we go back to My Saved Searches
-        } catch (Exception e) {
-            flash.errorMessage = "Error saving search: ${e.message}"
-            render(view: "create", model: [savedSearch: params])
-        }
+
     }
 
 
