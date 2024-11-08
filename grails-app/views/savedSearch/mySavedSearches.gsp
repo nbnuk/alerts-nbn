@@ -60,16 +60,16 @@
                                           <td>${search.description}</td>
                                           <td>
                                               <textarea rows="2" readonly
-                                                  class="form-control query-textarea"
+                                                  class="form-control query-textarea" style="border: none; background: transparent;"
                                                   >${search.searchRequestQueryUI}</textarea>
                                           </td>
-                                          <td>
+                                          <td style="vertical-align: middle;">
                                               <div class="btn-group">
                                                   <g:link class="btn btn-primary btn-sm"
                                                           controller="savedSearch"
                                                           action="edit"
                                                           id="${search.id}"
-                                                          params="[id: search.id, userId: params.userId]"
+                                                          params="[id: search.id]"
                                                           data-toggle="tooltip"
                                                           title="Edit this saved search">
                                                       <i class="fa fa-edit"></i> Edit
@@ -117,7 +117,7 @@
       <asset:script type="text/javascript">
         $(document).ready(function() {
             const deleteUrl = '${createLink(absolute: true, controller: "savedSearch", action: "delete")}';
-            const createUrl = '${createLink(absolute: true, controller: "savedSearch", action: "create", params: [userId: params.userId])}';
+            const createUrl = '${createLink(absolute: true, controller: "savedSearch", action: "create")}';
             const listUrl = '${createLink(absolute: true, controller: "savedSearch", action: "list")}';
             let searchIdToDelete = null;
 
@@ -128,7 +128,7 @@
             }
 
             $('#addNewSearch, #addFirstSearch').click(function() {
-                window.location.href = createUrl;
+              window.location.href = createUrl;
             });
 
             // Show modal when delete button is clicked
@@ -144,11 +144,11 @@
                         url: deleteUrl + '/' + searchIdToDelete,
                         method: 'POST',
                         data: {
-                            userId: '${params.userId}',
                             id: searchIdToDelete
                         },
                         success: function(response) {
                             $('#deleteConfirmModal').modal('hide');
+
                             if (response.success) {
                                 $('#search-' + searchIdToDelete).fadeOut(300, function() {
                                     $(this).remove();
@@ -166,9 +166,10 @@
                             }
                         },
                         error: function(xhr, status, error) {
+                            const response = JSON.parse(xhr.responseText);
                             $('#deleteConfirmModal').modal('hide');
-                            console.error('Delete error:', xhr.responseText);
-                            alert('An error occurred while deleting the saved search: ' + error);
+
+                            alert('An error occurred while deleting the saved search: ' + response.message);
                         }
                     });
                 }

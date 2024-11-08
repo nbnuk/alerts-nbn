@@ -8,8 +8,8 @@ class UrlMappings {
 
 
         group "/api/savedSearch", {
-            "/list/$userId"(controller: 'savedSearch', action: 'list', method: 'GET')
-            "/save"(controller: 'savedSearch', action: 'save', method: 'POST')
+            "/list/$userId"(controller: 'savedSearch', action: 'listAsync', method: 'GET')
+            "/save"(controller: 'savedSearch', action: 'saveAsync', method: 'POST')
             // other saved search endpoints...
         }
 

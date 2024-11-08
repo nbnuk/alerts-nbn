@@ -17,8 +17,8 @@
                 </div>
             </header>
             <div id="page-body" role="main">
-                <div class="row">
-                    <div class="col-md-12">
+                <div class="row mt-4">
+                    <div class="col-md-10 col-md-offset-1">
                         <g:if test="${flash.message}">
                             <div class="alert alert-info">${flash.message}</div>
                         </g:if>
@@ -28,7 +28,6 @@
 
                         <g:form resource="${savedSearch}" method="PUT" class="form-horizontal">
                             <g:hiddenField name="version" value="${savedSearch?.version}" />
-                            <g:hiddenField name="userId" value="${params.userId}" />  <!-- Add this line -->
 
                             <div class="form-group mb-3">
                                 <label for="name" class="form-label">Name</label>
@@ -48,7 +47,7 @@
                             <div class="form-group">
                                 <div class="d-flex gap-2">
                                     <g:submitButton name="update" class="btn btn-primary" value="Update"/>
-                                    <g:link action="mySavedSearches" params="[userId: params.userId]" class="btn btn-secondary">Cancel</g:link>
+                                    <g:link action="mySavedSearches" class="btn btn-secondary">Cancel</g:link>
                                 </div>
                             </div>
                         </g:form>

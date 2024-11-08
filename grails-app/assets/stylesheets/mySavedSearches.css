@@ -36,11 +36,11 @@
 /* Query textarea styles */
 .query-textarea {
     min-height: 60px;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
     padding: 8px;
     font-size: 0.9em;
     resize: vertical;
+    border: none;
+    background: transparent;
 }
 
 /* Action buttons styling */
@@ -68,6 +68,7 @@
 .alert {
     padding: 12px 20px;
     margin-bottom: 20px;
+    margin-top: 20px;
     border: 1px solid transparent;
     border-radius: 4px;
 }
@@ -121,3 +122,12 @@
     background-color: #333;
     border-radius: 4px;
 }
+
+.mt-4 {
+    margin-top:1.5rem
+}
+
+.mb-4 {
+    margin-bottom:1.5rem
+}
+

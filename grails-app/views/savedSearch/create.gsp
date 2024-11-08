@@ -17,8 +17,8 @@
                 </div>
             </header>
             <div id="page-body" role="main">
-                <div class="row">
-                    <div class="col-md-12">
+                <div class="row mt-4">
+                    <div class="col-md-10 col-md-offset-1">
                         <g:if test="${flash.message}">
                             <div class="alert alert-info">${flash.message}</div>
                         </g:if>
@@ -27,7 +27,6 @@
                         </g:if>
 
                         <g:form action="save" method="POST" class="form-horizontal">
-                            <g:hiddenField name="userId" value="${params.userId}" />
 
                             <div class="form-group mb-3">
                                 <label for="name" class="form-label">Name</label>

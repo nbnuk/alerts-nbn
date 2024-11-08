@@ -93,6 +93,11 @@ endpoints:
     jmx:
         unique-names: true
 
+security:
+    cas:
+        adminRole: ROLE_ADMIN
+        uriFilterPattern: "/,/alaAdmin.*,/testAuth.*,/query/.*,/admin/?.*,/admin/user/.*,/admin/user/debug/.*,/admin/debug/all,/notification/myAlerts,/notification/changeFrequency,/notification/addMyAlert,/notification/addMyAlert/.*,/notification/deleteMyAlert/.*,/notification/deleteMyAlert/.*,/notification/deleteMyAlertWR/.*,/webservice/.*,/webservice/createTaxonAlert,/webservice/taxonAlerts,/webservice/createRegionAlert,/webservice/regionAlerts,/webservice/deleteTaxonAlert/.*,/webservice/create*,/webservice/createSpeciesGroupRegionAlert,/ws/.*,/ws/createTaxonAlert,/ws/taxonAlerts,/ws/createRegionAlert,/ws/regionAlerts,/ws/deleteTaxonAlert/.*,/ws/createTaxonRegionAlert,/ws/createSpeciesGroupRegionAlert,/admin/runChecksNow,/savedSearch/edit,/savedSearch/update,/savedSearch/mySavedSearches,/savedSearch/create,/savedSearch/save"
+
 ---
 hibernate:
     show_sql: false
