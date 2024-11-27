@@ -29,11 +29,13 @@ class SavedSearchService {
             return savedSearch
     }
 
+
+
     def getSavedSearch(String userId) {
-            SavedSearch.findAllByUserId(userId)
+            SavedSearch.findAllByUserId(userId, [sort: 'id', order: 'desc'])
     }
 
-    def updateSavedSearch(String id, String userId, String name, String description, String searchRequestQueryUI) {
+    def updateSavedSearch(Long id, String userId, String name, String description, String searchRequestQueryUI) {
         def savedSearch = SavedSearch.findByIdAndUserId(id, userId)
         if (!savedSearch) {
             throw new IllegalArgumentException("Saved search not found")

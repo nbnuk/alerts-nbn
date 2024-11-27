@@ -141,28 +141,18 @@ class SavedSearchController {
     def update(Long id) {
         User currentUser = userService.getUser()
 
-        def savedSearch = savedSearchService.getSavedSearchById(params.id, currentUser.userId)
+        savedSearchService.updateSavedSearch(
+                id,
+                currentUser.userId,
+                params.name,
+                params.description,
+                cleanUpURL(params.searchRequestQueryUI)
+        )
 
-        if (!savedSearch) {
-            log.debug("update - Saved search not found for id: ${id}")
-            flash.errorMessage = "Saved search not found"
-            redirect(action: "mySavedSearches")
-            return
-        }
 
+        flash.message = "Saved search updated successfully"
+        redirect(action: "mySavedSearches")
 
-        // Only update allowed fields
-        savedSearch.name = params.name
-        savedSearch.description = params.description
-        savedSearch.searchRequestQueryUI = params.searchRequestQueryUI
-
-        if (savedSearch.save(flush: true)) {
-            flash.message = "Saved search updated successfully"
-            redirect(action: "mySavedSearches")
-        } else {
-            flash.errorMessage = "Error updating saved search"
-            render(view: "edit", model: [savedSearch: savedSearch])
-        }
     }
 
     /**
@@ -193,11 +183,33 @@ class SavedSearchController {
                 currentUser.userId,
                 params.name,
                 params.description,
-                params.searchRequestQueryUI
+                cleanUpURL(params.searchRequestQueryUI)
         )
 
         flash.message = "Search saved successfully"
         redirect(action: "mySavedSearches")  // This ensures we go back to My Saved Searches
 
+    }
+
+    private cleanUpURL(url){
+        if (!url) {
+            return url
+        }
+        def resultUrl = url;
+
+        resultUrl = resultUrl.replace('?nbn_loading=true&', '?')
+        resultUrl = resultUrl.replace('?nbn_loading=true', '')
+        resultUrl = resultUrl.replace('&nbn_loading=true', '')
+
+        //add fq if missing
+        if (resultUrl && !resultUrl.contains('?fq=') && !resultUrl.contains('&fq=')) {
+            // Determine whether to add `?` or `&` based on the URL
+            if (url.contains('?')) {
+                resultUrl = resultUrl += '&fq='
+            } else {
+                resultUrl = resultUrl += '?fq='
+            }
+        }
+        return resultUrl;
     }
 }

@@ -8,6 +8,11 @@
         <meta name="breadcrumbParent" content="${createLink(action: 'mySavedSearches')}, My saved searches" />
         <title>Edit saved search | ${grailsApplication.config.skin.orgNameLong}</title>
         <asset:stylesheet href="alerts.css"/>
+        <style>
+        input:invalid, select:invalid, textarea:invalid {
+            background: #fff;
+        }
+        </style>
     </head>
     <body>
         <div id="content">
@@ -30,7 +35,7 @@
                             <g:hiddenField name="version" value="${savedSearch?.version}" />
 
                             <div class="form-group mb-3">
-                                <label for="name" class="form-label">Name</label>
+                                <label for="name" class="form-label">Name*</label>
                                 <g:textField name="name" value="${savedSearch?.name}" class="form-control" required=""/>
                             </div>
 
@@ -40,7 +45,7 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <label for="searchRequestQueryUI" class="form-label">Query</label>
+                                <label for="searchRequestQueryUI" class="form-label">Query*</label>
                                 <g:textArea name="searchRequestQueryUI" value="${savedSearch?.searchRequestQueryUI}" class="form-control" rows="3" required=""/>
                             </div>
 
