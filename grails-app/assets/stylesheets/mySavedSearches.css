@@ -1,0 +1,133 @@
+
+/* Button styles */
+.btn-primary {
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #286090;
+    border-color: #204d74;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Table styles */
+.table-custom-width {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: #fff;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    padding: 12px;
+    font-weight: 500;
+}
+
+.table td {
+    padding: 12px;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Query textarea styles */
+.query-textarea {
+    min-height: 60px;
+    padding: 8px;
+    font-size: 0.9em;
+    resize: vertical;
+    border: none;
+    background: transparent;
+}
+
+/* Action buttons styling */
+.action-buttons .btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.action-buttons .btn {
+    padding: 6px 12px;
+    font-size: 0.9em;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Empty state styling */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+/* Alert styling */
+.alert {
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-info {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    color: #31708f;
+}
+
+.alert-danger {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+}
+
+/* Update the delete button styling */
+.btn-outline-danger {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Adjust button group spacing */
+.btn-group {
+    gap: 15px;
+    display: flex;
+}
+
+/* Optional: Add some margin to ensure buttons don't touch on smaller screens */
+.btn-group .btn {
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* Tooltip styling */
+.tooltip {
+    font-size: 14px;
+}
+
+.tooltip-inner {
+    padding: 8px 12px;
+    background-color: #333;
+    border-radius: 4px;
+}
+
+.mt-4 {
+    margin-top:1.5rem
+}
+
+.mb-4 {
+    margin-bottom:1.5rem
+}
+
