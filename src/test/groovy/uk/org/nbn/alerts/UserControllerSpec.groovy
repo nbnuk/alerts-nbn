@@ -1,11 +1,11 @@
 package uk.org.nbn.alerts
 
 import grails.converters.JSON
-import grails.test.mixin.TestFor
+import grails.testing.web.controllers.ControllerUnitTest
 import spock.lang.Specification
 
-@TestFor(UserController)
-class UserControllerSpec extends Specification  {
+
+class UserControllerSpec extends Specification implements ControllerUnitTest<UserController> {
 
     def setup() {
     }

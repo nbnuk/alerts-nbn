@@ -1,18 +1,23 @@
 package uk.org.nbn.alerts
 
+import au.org.ala.alerts.Frequency
 import au.org.ala.alerts.Notification
 import au.org.ala.alerts.Query
 import au.org.ala.alerts.User
 import grails.converters.JSON
-import grails.test.mixin.Mock
-import grails.test.mixin.TestFor
+
+import grails.testing.gorm.DataTest
+import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
 
 
-@TestFor(WebserviceController)
-@Mock([User, Notification, Query])
-class WebserviceControllerSpec extends Specification {
+
+class WebserviceControllerSpec extends Specification implements ControllerUnitTest< WebserviceController>, DataTest {
+
+    Class[] getDomainClassesToMock() {
+        [User, Notification, Query] as Class[]
+    }
 
     def setup() {
     }

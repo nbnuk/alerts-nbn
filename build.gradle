@@ -1,115 +1,131 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        maven { url "https://repository.gbif.org/repository/uk-nbn-releases/" }
-        maven { url "https://nexus.ala.org.au/content/groups/public/" }
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.15.1"
-    }
+plugins {
+    id "groovy" 
+    id "org.grails.grails-web" 
+    id "org.grails.grails-gsp" 
+    id "com.github.erdi.webdriver-binaries" version "3.0"
+    id "war" 
+    id "idea" 
+    id "com.bertramlabs.asset-pipeline" 
+    id "application" 
+    id "eclipse" 
 }
 
-version "0.1.0"
-group "uk.org.nbn"
-
-apply plugin:"eclipse"
-apply plugin:"idea"
-apply plugin:"war"
-apply plugin:"org.grails.grails-web"
-apply plugin:"org.grails.grails-gsp"
-apply plugin:"asset-pipeline"
-
-apply from: 'https://raw.githubusercontent.com/nbnuk/travis-build-configuration/master/travis_grails_publish.gradle'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+version "5.2.5-NBN-0-0-0-SNAPSHOT"
+group = "uk.org.nbn"
 
 repositories {
     mavenLocal()
-    maven { url "https://repository.gbif.org/repository/uk-nbn-releases/" }
-    maven { url "https://repository.gbif.org/repository/uk-nbn-snapshots/" }
+    mavenCentral()
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
-    maven { url "https://repo.grails.org/grails/core" }
+    maven { url "https://repo.grails.org/grails/core/" }
+    maven { url "https://repository.gbif.org/repository/uk-nbn-releases/" }
+
 }
 
-// Set to true it needed only for development
-boolean inplace = false
-
-if (inplace) {
-    grails {
-        exploded = true
-        plugins {
-            compile project(':alerts')
+configurations {
+    all {
+        resolutionStrategy.force 'org.codehaus.groovy:groovy-xml:3.0.13'
+        resolutionStrategy.eachDependency { DependencyResolveDetails details->
+            if (details.requested.group == 'org.seleniumhq.selenium') {
+                details.useVersion('4.10.0')
+            }
         }
     }
 }
 
+boolean inplace = true
+
 dependencies {
-
     def noCache = {
-     //   exclude group: 'org.grails.plugins', module: 'cache'
-       // exclude group: 'org.ehcache', module: 'ehcache'
+        exclude group: 'org.grails.plugins', module: 'cache'
+        exclude group: 'org.ehcache', module: 'ehcache'
     }
-
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    compile "org.grails:grails-core"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.grails:grails-dependencies", noCache
-    compile "org.grails:grails-web-boot"
-    compile "org.grails:grails-logging"
-    compile "org.grails:grails-plugin-rest"
-    compile "org.grails:grails-plugin-databinding"
-    compile "org.grails:grails-plugin-i18n"
-    compile "org.grails:grails-plugin-services"
-    compile "org.grails:grails-plugin-url-mappings"
-    compile "org.grails:grails-plugin-interceptors"
-    compile "org.grails.plugins:cache"
-    compile "org.grails.plugins:async"
-    compile "org.grails.plugins:scaffolding"
-    compile "org.grails.plugins:events"
-    compile "org.grails.plugins:hibernate5"
-    compile "org.hibernate:hibernate-core:5.1.16.Final"
-    compile "org.hibernate:hibernate-ehcache:5.1.16.Final"
+    implementation("org.grails:grails-core")
+    implementation("org.grails:grails-logging")
+    implementation("org.grails:grails-plugin-databinding")
+    implementation("org.grails:grails-plugin-i18n")
+    implementation("org.grails:grails-plugin-interceptors")
+    implementation("org.grails:grails-plugin-rest")
+    implementation("org.grails:grails-plugin-services")
+    implementation("org.grails:grails-plugin-url-mappings")
+    implementation("org.grails:grails-web-boot")
+    implementation("org.grails.plugins:gsp")
+    implementation("org.grails.plugins:hibernate5")
+    implementation("org.grails.plugins:scaffolding")
+    implementation("org.hibernate:hibernate-core:5.6.15.Final")
+    implementation("org.springframework.boot:spring-boot-autoconfigure")
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-logging")
+    implementation("org.springframework.boot:spring-boot-starter-tomcat")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation 'org.grails.plugins:mail:4.0.0'
+    implementation 'org.grails.plugins:cache'
+    implementation "org.apache.httpcomponents:httpcore:4.4.16"
+//    implementation "org.grails.plugins:cache-ehcache"
     if(!inplace) {
-        compile "au.org.ala:alerts:1.5.1-PLUGIN", noCache
+        implementation "au.org.ala:alerts:5.2.5-nbn-PLUGIN-0.0.0-SNAPSHOT"
     }
-    compile "org.grails.plugins:gsp"
-    compile 'org.grails.plugins:external-config:1.1.1'
-    console "org.grails:grails-console"
-    profile "org.grails.profiles:web"
-    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.14.2"
-    runtime "com.h2database:h2"
-    runtime "org.apache.tomcat:tomcat-jdbc"
-    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.15.1"
+    else{
+        implementation project(':alerts')
+    }
+    implementation "org.grails.plugins:ala-bootstrap5:1.0.0-SNAPSHOT", noCache
+    implementation "org.grails.plugins:ala-auth:$alaSecurityLibsVersion"
+    implementation "org.grails.plugins:ala-ws-security-plugin:$alaSecurityLibsVersion"
+    implementation "org.grails.plugins:ala-ws-plugin:$alaSecurityLibsVersion"
+    implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
+    implementation "org.grails.plugins:ala-admin-plugin:2.4.0-SNAPSHOT"
+    compileOnly("io.micronaut:micronaut-inject-groovy")
+    console("org.grails:grails-console")
+    runtimeOnly("com.bertramlabs.plugins:asset-pipeline-grails:4.3.0")
+    runtimeOnly("com.h2database:h2")
+    runtimeOnly("javax.xml.bind:jaxb-api:2.3.1")
+    runtimeOnly("org.apache.tomcat:tomcat-jdbc")
+    runtimeOnly("org.fusesource.jansi:jansi:1.18")
+    runtimeOnly("org.glassfish.web:el-impl:2.2.1-b05")
+    testImplementation "org.apache.httpcomponents:httpcore:4.4.16"
+    testImplementation("io.micronaut:micronaut-inject-groovy")
+    testImplementation("org.grails:grails-gorm-testing-support")
+    testImplementation("org.grails:grails-web-testing-support")
+    testImplementation("org.grails.plugins:geb")
+    testImplementation("org.seleniumhq.selenium:selenium-api:4.10.0")
+    testImplementation("org.seleniumhq.selenium:selenium-remote-driver:4.10.0")
+    testImplementation("org.seleniumhq.selenium:selenium-support:4.10.0")
+    testImplementation("org.spockframework:spock-core")
+    testRuntimeOnly("org.seleniumhq.selenium:selenium-chrome-driver:4.10.0")
+    testRuntimeOnly("org.seleniumhq.selenium:selenium-firefox-driver:4.10.0")
+    testRuntimeOnly("org.seleniumhq.selenium:selenium-safari-driver:4.10.0")
+    testImplementation("io.micronaut:micronaut-http-client")
 
-    //compile "org.grails.plugins:grails-plugin-converters" // only needed for grails 3.3
-    //testCompile "org.grails:grails-plugin-testing"
-    testCompile "org.grails:grails-gorm-testing-support"
-    testCompile "org.grails.plugins:geb"
-    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
-    testCompile "org.grails:grails-web-testing-support"
-    testCompile "org.grails:grails-test-mixins:3.3.0"
 }
 
-bootRun {
-    jvmArgs('-Dspring.output.ansi.enabled=always')
-    addResources = true
+application {
+    mainClass.set("myapp.Application")
 }
 
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+}
 
+tasks.withType(Test) {
+    useJUnitPlatform()
+    systemProperty "geb.env", System.getProperty('geb.env')
+    systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
+    systemProperty 'webdriver.chrome.driver', "${System.getenv('CHROMEWEBDRIVER')}/chromedriver"
+    systemProperty 'webdriver.gecko.driver', "${System.getenv('GECKOWEBDRIVER')}/geckodriver"
+}
+tasks.withType(War).configureEach { War war ->
+    war.dependsOn compileGroovyPages
+}
+//webdriverBinaries {
+//    chromedriver '110.0.5481.77'
+//    geckodriver '0.32.2'
+//    edgedriver '110.0.1587.57'
+//}
 assets {
     minifyJs = true
     minifyCss = true
     minifyOptions = [
             excludes : [ '**/nbn.js' ]
     ]
-
 }
-
-

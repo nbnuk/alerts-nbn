@@ -1,11 +1,12 @@
 package uk.org.nbn.alerts
 
-import grails.test.mixin.TestFor
+
+import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
 
-@TestFor(AdminController)
-class AdminControllerSpec extends Specification {
+
+class AdminControllerSpec extends Specification implements ControllerUnitTest<AdminController> {
 
     def setup() {
     }

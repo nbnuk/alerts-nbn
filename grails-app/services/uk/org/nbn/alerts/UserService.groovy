@@ -9,7 +9,7 @@ import grails.gorm.transactions.Transactional
 class UserService extends au.org.ala.alerts.UserService{
 
     @Override
-    def getUserAlertsConfig(User user) {
+    Map getUserAlertsConfig(User user) {
 
         def map = super.getUserAlertsConfig(user)
         map.disabledQueries.removeAll { it.name == 'New images' || it.name == 'Citizen science records with images' || it.name == 'Blogs and News' }

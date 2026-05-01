@@ -5,13 +5,17 @@ import au.org.ala.alerts.Notification
 import au.org.ala.alerts.Query
 import au.org.ala.alerts.User
 import au.org.ala.web.AuthService
-import grails.test.mixin.Mock
-import grails.test.mixin.TestFor
+import grails.testing.services.ServiceUnitTest
+import grails.testing.gorm.DataTest
+
 import spock.lang.Specification
 
-@TestFor(UserService)
-@Mock([User, Notification, Query, Frequency])
-class UserServiceSpec extends Specification {
+
+class UserServiceSpec extends Specification implements ServiceUnitTest<UserService>, DataTest {
+
+    Class[] getDomainClassesToMock() {
+        [User, Notification, Query, Frequency] as Class[]
+    }
 
 
 
