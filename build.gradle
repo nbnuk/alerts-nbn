@@ -33,7 +33,7 @@ configurations {
     }
 }
 
-boolean inplace = true
+boolean inplace = false
 
 dependencies {
     def noCache = {

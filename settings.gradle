@@ -13,7 +13,7 @@ pluginManagement {
 
 rootProject.name='alerts-nbn'
 
-boolean inplace = true
+boolean inplace = false
 
 if (inplace) {
     include ':alerts'
