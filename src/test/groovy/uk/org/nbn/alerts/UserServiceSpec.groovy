@@ -5,6 +5,10 @@ import au.org.ala.alerts.Notification
 import au.org.ala.alerts.Query
 import au.org.ala.alerts.User
 import au.org.ala.web.AuthService
+import au.org.ala.alerts.QueryService
+import org.springframework.context.MessageSource
+import grails.core.GrailsApplication
+
 import grails.testing.services.ServiceUnitTest
 import grails.testing.gorm.DataTest
 
@@ -42,6 +46,18 @@ class UserServiceSpec extends Specification implements ServiceUnitTest<UserServi
                 .each {
                     new Notification(user: u1, query: it).save(flush: true, failOnError: true)
                 }
+
+        def queryService = Mock(QueryService)
+
+        queryService.createMyAnnotationQuery(_) >> { args ->
+            def query = new Query(name: args[0], custom: true, resourceName: "1", updateMessage: "1", baseUrl: "1", baseUrlForUI: "1", queryPathForUI: "1", queryPath: "1").save(flush: true, failOnError: true)
+            new Notification(user: u1, query: query).save(flush: true, failOnError: true)
+            query
+        }
+
+        service.queryService = queryService
+
+
 
         when:
         def map = service.getUserAlertsConfig(u1)

@@ -100,7 +100,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("myapp.Application")
+    mainClass.set("alerts.nbn.Application")
 }
 
 java {
