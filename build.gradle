@@ -13,6 +13,9 @@ plugins {
 version "5.2.5-NBN-0-0-0-SNAPSHOT"
 group = "uk.org.nbn"
 
+apply from: 'https://raw.githubusercontent.com/nbnuk/travis-build-configuration/master/travis_grails_publish.gradle'
+
+
 repositories {
     mavenLocal()
     mavenCentral()
