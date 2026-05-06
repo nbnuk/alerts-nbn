@@ -7,12 +7,30 @@ plugins {
     id "idea" 
     id "com.bertramlabs.asset-pipeline" 
     id "application" 
-    id "eclipse" 
+    id "eclipse"
+    id "maven-publish"
 }
 
 version "5.2.5-NBN-0-0-0-SNAPSHOT"
 group = "uk.org.nbn"
 
+publishing {
+    repositories {
+        maven {
+            name 'Nexus'
+            url "https://repository.gbif.org/repository/${project.version.endsWith('-SNAPSHOT') ? 'uk-nbn-snapshots' : 'uk-nbn-releases'}"
+            credentials {
+                username = System.getenv('TRAVIS_DEPLOY_USERNAME')
+                password = System.getenv('TRAVIS_DEPLOY_PASSWORD')
+            }
+        }
+    }
+    publications {
+        mavenJar(MavenPublication) {
+            artifact bootWar
+        }
+    }
+}
 repositories {
     mavenLocal()
     mavenCentral()
