@@ -27,7 +27,7 @@ publishing {
     }
     publications {
         mavenJar(MavenPublication) {
-            from components.web
+            artifact bootWar
         }
     }
 }
