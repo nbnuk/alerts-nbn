@@ -27,7 +27,7 @@ publishing {
     }
     publications {
         mavenJar(MavenPublication) {
-            artifact bootWar
+            artifact war
         }
     }
 }
